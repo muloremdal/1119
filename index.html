@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="바이브코딩으로 만든 게임 예시와 제작 인터뷰를 모으는 브로브로 아케이드.">
+<meta name="description" content="바이브코딩 게임 예시와 제작 인터뷰, 로봇·챗봇 실습 자료를 모으는 브로브로 아케이드.">
 <title>브로브로 · 바이브코딩 아케이드</title>
 <style>
 :root {
@@ -30,12 +30,12 @@ nav { display:flex; flex-wrap:wrap; gap:4px; }
 nav a { padding:8px 11px; text-decoration:none; color:var(--muted); font-size:.875rem; font-weight:700; border:1px solid transparent; border-radius:6px; }
 nav a:hover,nav a[aria-current="location"] { color:var(--white); border-color:#7655af; background:#241438; }
 .menu-toggle { display:none; }
-.hero { border-bottom:1px solid var(--line); background:radial-gradient(ellipse at 77% 52%,#281540 0%,transparent 56%); }
+.hero { border-bottom:1px solid var(--line); background:radial-gradient(ellipse at 76% 43%,#371860 0%,transparent 55%),linear-gradient(160deg,#191025,var(--ink) 63%); }
 .hero-grid { min-height:490px; display:grid; grid-template-columns:1.1fr .9fr; align-items:center; gap:42px; padding-block:64px; }
 .kicker { margin:0 0 18px; color:var(--lime); font:700 .875rem/1.5 ui-monospace,monospace; letter-spacing:.18em; }
 h1,h2,h3,p { margin-top:0; }
 h1 { margin-bottom:18px; font-size:clamp(3.5rem,9vw,7.75rem); line-height:.98; letter-spacing:-.095em; }
-.hero-copy { max-width:460px; margin-bottom:27px; color:var(--muted); font-size:clamp(1rem,2vw,1.15rem); }
+.hero-copy { max-width:460px; margin-bottom:27px; color:var(--muted); font-size:clamp(1rem,2vw,1.15rem); word-break:keep-all; }
 .actions { display:flex; flex-wrap:wrap; gap:12px; }
 .action { display:inline-flex; align-items:center; justify-content:center; min-height:45px; padding:9px 17px; border:1px solid #8761c2; border-radius:6px; background:#251639; text-decoration:none; font-weight:800; transition:background .15s,transform .15s; }
 .action.primary { background:var(--violet); color:#140a22; border-color:var(--violet); }
@@ -61,10 +61,10 @@ summary:hover { background:#241637; }
 .detail p { margin-bottom:9px; }
 .detail p:last-child { margin-bottom:0; }
 .detail strong { color:var(--white); }
-.resources { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
-.resource { padding:24px; border:1px dashed #5b417f; border-radius:9px; background:#151020; }
+.resources { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; align-items:start; }
+.resource { padding:clamp(14px,3vw,22px); border:1px solid #5b417f; border-radius:9px; background:#151020; }
 .resource h2 { font-size:1.4rem; }
-.resource p { margin:0; color:var(--muted); }
+.resource .section-note { margin-bottom:16px; }
 footer { padding:24px 0; color:var(--muted); }
 dialog { width:min(700px,calc(100% - 22px)); max-height:calc(100dvh - 24px); overflow:auto; padding:clamp(12px,3vw,24px); border:1px solid #8c63c6; border-radius:12px; background:#110c1a; color:var(--white); }
 dialog::backdrop { background:#07050cd9; }
@@ -97,6 +97,37 @@ dialog::backdrop { background:#07050cd9; }
   html { scroll-behavior:auto; }
   *,*::before,*::after { transition:none !important; animation:none !important; }
 }
+.hero-art { border-color:#674390; box-shadow:inset 0 0 35px #11081b,0 0 42px #8d4dff20; }
+.hero-art::before,.hero-art::after { content:""; position:absolute; width:24px; height:24px; pointer-events:none; }
+.hero-art::before { top:9px; left:9px; border-top:2px solid #c49aff; border-left:2px solid #c49aff; }
+.hero-art::after { bottom:9px; right:9px; border-bottom:2px solid #c49aff; border-right:2px solid #c49aff; }
+.game-art { border-right:1px solid var(--line); }
+.game-art canvas { filter:drop-shadow(0 0 9px #aa72ff66); }
+.library { margin-top:34px; }
+.library-head { display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:14px; margin-bottom:17px; }
+.library-head h3 { margin:0; font-size:1.4rem; }
+.filters { display:flex; flex-wrap:wrap; gap:7px; }
+.filter { min-height:40px; padding:4px 12px; border:1px solid #6a4a96; border-radius:5px; background:#201431; }
+.filter:hover { background:#34204c; }
+.filter[aria-pressed="true"] { border-color:var(--lilac); background:var(--lilac); color:#1c102b; font-weight:800; }
+.library-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.library-card { position:relative; display:flex; flex-direction:column; align-items:flex-start; min-width:0; padding:20px; border:1px solid var(--line); border-top:2px solid #8c57cf; border-radius:7px; background:linear-gradient(140deg,#211331,#151020 70%); }
+.library-card:hover,.library-card:focus-within { border-color:#a374e9; }
+.library-card :is(h3,h4) { margin:0 0 8px; color:var(--white); font-size:1.18rem; line-height:1.25; }
+.card-tag { margin-bottom:10px; color:var(--lime); font-size:.875rem; }
+.card-description { margin-bottom:17px; color:var(--muted); }
+.card-links { display:flex; flex-wrap:wrap; gap:5px 16px; margin-top:auto; }
+.card-links a { display:inline-flex; min-height:34px; align-items:center; color:var(--lilac); text-underline-offset:4px; font-weight:700; }
+.card-links a:hover { color:var(--lime); }
+.resource .library-grid { grid-template-columns:1fr; }
+.resource .library-card { margin-top:0; }
+.interview-sheet { margin-top:18px; padding:20px; border-left:3px solid var(--lime); background:var(--panel); }
+.interview-sheet h3 { margin-bottom:10px; font-size:1.18rem; }
+.interview-sheet ul { margin:0; padding-left:1.25rem; color:var(--muted); }
+.interview-sheet li + li { margin-top:6px; }
+@media(max-width:900px) { .library-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:570px) { .library-grid { grid-template-columns:1fr; } }
+@media(max-width:760px) { .game-art { border-right:0; border-bottom:1px solid var(--line); } }
 </style>
 </head>
 <body>
@@ -120,9 +151,9 @@ dialog::backdrop { background:#07050cd9; }
       <div>
         <p class="kicker">VIBE CODING ARCADE</p>
         <h1>브로브로</h1>
-        <p class="hero-copy">게임·로봇·챗봇을 만드는 사람들의 자료실. 직접 만든 게임을 플레이하고, 첫 질문이 어떻게 게임이 됐는지 살펴보세요.</p>
+        <p class="hero-copy">직접 벽돌을 깨고, 바이브코딩으로 만든 게임을 만나 보세요. 다음 게임을 기획하는 질문부터 로봇·챗봇 실습까지 모았어요.</p>
         <div class="actions">
-          <a class="action primary" href="#games">게임 고르기</a>
+          <a class="action primary" href="#games">아케이드 입장</a>
           <a class="action" href="#interview">인터뷰 분석 읽기</a>
         </div>
       </div>
@@ -144,6 +175,54 @@ dialog::backdrop { background:#07050cd9; }
           </div>
         </div>
       </article>
+      <div class="library">
+        <div class="library-head">
+          <h3>외부 게임과 제작 자료</h3>
+          <div class="filters" id="game-filters" role="group" aria-label="게임 자료 유형" hidden>
+            <button type="button" class="filter" data-filter="all" aria-pressed="true">전체</button>
+            <button type="button" class="filter" data-filter="play" aria-pressed="false">게임 둘러보기</button>
+            <button type="button" class="filter" data-filter="make" aria-pressed="false">게임 만들기</button>
+          </div>
+        </div>
+        <div class="library-grid" id="game-library">
+          <article class="library-card" data-game-kind="play">
+            <p class="card-tag">바이브코딩 사례 · 비행</p>
+            <h4>Fly Pieter</h4>
+            <p class="card-description">Pieter Levels가 Cursor와 Three.js를 사용해 만든 브라우저 비행 게임이에요. 첫 화면에서 기체를 고르고 조작법을 익히는 흐름을 살펴보세요.</p>
+            <div class="card-links"><a href="https://fly.pieter.com/">게임 열기</a><a href="https://levels.io/fly-pieter-com-vibecoded-flight-simulator/">제작자 기록</a></div>
+          </article>
+          <article class="library-card" data-game-kind="play">
+            <p class="card-tag">바이브코딩 사례 · 게임잼</p>
+            <h4>Vibe Code Game Jam</h4>
+            <p class="card-description">2025년 게임잼 수상작과 심사평을 볼 수 있어요. 심사위원들이 어떤 조작과 연출을 재미있다고 봤는지 비교해 보세요.</p>
+            <div class="card-links"><a href="https://levels.io/winners-of-the-2025-vibe-code-game-jam">수상작과 심사평 보기</a></div>
+          </article>
+          <article class="library-card" data-game-kind="play">
+            <p class="card-tag">아케이드 · 인디 게임</p>
+            <h4>PICO-8 카트리지</h4>
+            <p class="card-description">작은 화면에 담긴 커뮤니티 게임을 둘러보세요. 한 가지 조작이나 규칙으로 재미를 만드는 방식을 관찰하기 좋아요.</p>
+            <div class="card-links"><a href="https://www.lexaloffle.com/bbs/?cat=7">카트리지 둘러보기</a></div>
+          </article>
+          <article class="library-card" data-game-kind="make">
+            <p class="card-tag">만들기 · 블록 코딩</p>
+            <h4>MakeCode Arcade</h4>
+            <p class="card-description">튜토리얼을 따라 캐릭터 이동, 충돌, 점수 같은 규칙을 한 가지씩 만들어 보세요.</p>
+            <div class="card-links"><a href="https://arcade.makecode.com/tutorials">튜토리얼 열기</a></div>
+          </article>
+          <article class="library-card" data-game-kind="make">
+            <p class="card-tag">만들기 · 기능 예제</p>
+            <h4>GDevelop 예제</h4>
+            <p class="card-description">완성 게임과 작은 기능 예제를 둘러볼 수 있어요. 화면 흔들림이나 카메라 이동처럼 개선하고 싶은 기능 하나를 골라 보세요.</p>
+            <div class="card-links"><a href="https://gdevelop.io/game-example">게임 예제 열기</a></div>
+          </article>
+          <article class="library-card" data-game-kind="make">
+            <p class="card-tag">만들기 · 주제 정하기</p>
+            <h4>itch.io Game Jams</h4>
+            <p class="card-description">게임잼의 주제와 제작 기간을 살펴보세요. 마음에 드는 제약 하나를 골라 주말에 만들 작은 게임을 기획해 보세요.</p>
+            <div class="card-links"><a href="https://itch.io/jams">게임잼 둘러보기</a></div>
+          </article>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -177,13 +256,56 @@ dialog::backdrop { background:#07050cd9; }
           </div>
         </details>
       </div>
+      <aside class="interview-sheet" aria-labelledby="interview-sheet-title">
+        <h3 id="interview-sheet-title">내 게임을 만들기 전에 물어볼 질문</h3>
+        <ul>
+          <li><strong>첫 10초</strong> 플레이어가 제일 먼저 무엇을 하고, 조작은 어떻게 익힐까요?</li>
+          <li><strong>핵심 규칙</strong> 어떤 행동에 점수나 보상이 붙고, 언제 한 판이 끝나나요?</li>
+          <li><strong>미정 항목</strong> 난이도·화면 크기·색처럼 정하지 않은 항목 중 어디까지 맡겨도 되나요?</li>
+          <li><strong>검수</strong> 성공, 실패, 다시 시작 때 각각 어떤 화면이 나오면 통과인가요?</li>
+        </ul>
+      </aside>
     </div>
   </section>
 
   <div class="section">
     <div class="wrap resources">
-      <section class="resource" id="robotics"><h2>로봇 코딩 자료</h2><p>준비 중</p></section>
-      <section class="resource" id="chatbots"><h2>챗봇 자료</h2><p>준비 중</p></section>
+      <section class="resource" id="robotics" aria-labelledby="robotics-title">
+        <h2 id="robotics-title">로봇 코딩 자료</h2>
+        <p class="section-note">센서를 시험한 뒤 가상 공간에서 로봇을 움직여 보세요.</p>
+        <div class="library-grid">
+          <article class="library-card">
+            <p class="card-tag">브라우저 실습 · 센서</p>
+            <h3>Wokwi 거리 센서</h3>
+            <p class="card-description">초음파 센서 예제를 열고 가상 물체의 거리를 바꿔 보세요. 로봇이 장애물과 얼마나 가까운지 판단하는 입력부터 연습할 수 있어요.</p>
+            <div class="card-links"><a href="https://docs.wokwi.com/parts/wokwi-hc-sr04">센서 예제 열기</a></div>
+          </article>
+          <article class="library-card">
+            <p class="card-tag">설치형 실습 · 시뮬레이션</p>
+            <h3>Webots 첫 시뮬레이션</h3>
+            <p class="card-description">가상 환경에 바닥과 로봇을 배치하고 실행하는 공식 튜토리얼이에요. 실제 기기를 준비하기 전에 로봇이 움직일 공간을 만들어 보세요.</p>
+            <div class="card-links"><a href="https://github.com/cyberbotics/webots/blob/master/docs/guide/tutorial-1-your-first-simulation-in-webots.md">공식 튜토리얼 열기</a></div>
+          </article>
+        </div>
+      </section>
+      <section class="resource" id="chatbots" aria-labelledby="chatbots-title">
+        <h2 id="chatbots-title">챗봇 자료</h2>
+        <p class="section-note">공개 데모를 써 보고 간단한 대화 화면부터 만들어 보세요.</p>
+        <div class="library-grid">
+          <article class="library-card">
+            <p class="card-tag">둘러보기 · 공개 데모</p>
+            <h3>Hugging Face Spaces</h3>
+            <p class="card-description">공개 AI 앱에서 관심 있는 챗봇을 찾아 같은 질문을 던져 보세요. 첫 안내, 예시 질문, 답변 표시 방식이 어떻게 다른지 비교해 보세요.</p>
+            <div class="card-links"><a href="https://huggingface.co/spaces">공개 데모 탐색</a></div>
+          </article>
+          <article class="library-card">
+            <p class="card-tag">만들기 · Python</p>
+            <h3>Gradio ChatInterface</h3>
+            <p class="card-description">Python으로 채팅 화면을 구성하는 공식 입문 자료예요. 첫 실습은 입력 문장을 그대로 돌려주면서 메시지의 흐름을 확인해 보세요.</p>
+            <div class="card-links"><a href="https://github.com/gradio-app/gradio/blob/main/guides/01_getting-started/01_quickstart.md">공식 시작 가이드</a></div>
+          </article>
+        </div>
+      </section>
     </div>
   </div>
 </main>
@@ -240,6 +362,22 @@ function updateNavigation() {
 }
 window.addEventListener("hashchange", updateNavigation);
 updateNavigation();
+
+const filters = document.querySelector("#game-filters");
+const filterButtons = filters.querySelectorAll("button");
+const gameResources = document.querySelectorAll("#game-library [data-game-kind]");
+
+filters.hidden = false;
+filters.addEventListener("click", (event) => {
+  const selected = event.target.closest("button[data-filter]");
+  if (!selected) return;
+  for (const button of filterButtons) {
+    button.setAttribute("aria-pressed", String(button === selected));
+  }
+  for (const resource of gameResources) {
+    resource.hidden = selected.dataset.filter !== "all" && resource.dataset.gameKind !== selected.dataset.filter;
+  }
+});
 
 const palette = ["#a470ff", "#b28bff", "#c6a8ff", "#dfc8ff", "#ddff9a"];
 const artwork = document.querySelector("#game-art").getContext("2d");
