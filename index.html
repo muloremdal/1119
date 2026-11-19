@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="바이브코딩으로 만든 게임 예시와 제작 인터뷰를 모으는 브로브로 아케이드.">
+<title>브로브로 · 바이브코딩 아케이드</title>
+<style>
+:root {
+  color-scheme: dark;
+  --ink:#0d0915; --panel:#191126; --line:#392955; --white:#f6efff;
+  --muted:#c4b8d5; --violet:#ab7aff; --lilac:#e4d2ff; --lime:#ddff9a;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; scroll-padding-top:96px; }
+body { margin:0; background:var(--ink); color:var(--white); font:1rem/1.65 system-ui,"Malgun Gothic",sans-serif; }
+button,a { -webkit-tap-highlight-color:transparent; }
+a { color:inherit; }
+button { font:inherit; color:inherit; cursor:pointer; }
+:focus-visible { outline:3px solid var(--lime); outline-offset:4px; }
+.wrap { width:min(1120px, calc(100% - 48px)); margin-inline:auto; }
+[hidden] { display:none !important; }
+.skip { position:fixed; z-index:5; top:8px; left:12px; padding:10px; background:var(--ink); transform:translateY(-150%); }
+.skip:focus { transform:none; }
+header { position:sticky; top:0; z-index:3; background:#0d0915f2; border-bottom:1px solid var(--line); }
+.bar { min-height:69px; display:flex; align-items:center; justify-content:space-between; gap:18px; position:relative; }
+.brand { display:flex; align-items:center; gap:10px; text-decoration:none; font-weight:900; white-space:nowrap; letter-spacing:-.04em; }
+.brand img { width:37px; height:37px; object-fit:contain; }
+nav { display:flex; flex-wrap:wrap; gap:4px; }
+nav a { padding:8px 11px; text-decoration:none; color:var(--muted); font-size:.875rem; font-weight:700; border:1px solid transparent; border-radius:6px; }
+nav a:hover,nav a[aria-current="location"] { color:var(--white); border-color:#7655af; background:#241438; }
+.menu-toggle { display:none; }
+.hero { border-bottom:1px solid var(--line); background:radial-gradient(ellipse at 77% 52%,#281540 0%,transparent 56%); }
+.hero-grid { min-height:490px; display:grid; grid-template-columns:1.1fr .9fr; align-items:center; gap:42px; padding-block:64px; }
+.kicker { margin:0 0 18px; color:var(--lime); font:700 .875rem/1.5 ui-monospace,monospace; letter-spacing:.18em; }
+h1,h2,h3,p { margin-top:0; }
+h1 { margin-bottom:18px; font-size:clamp(3.5rem,9vw,7.75rem); line-height:.98; letter-spacing:-.095em; }
+.hero-copy { max-width:460px; margin-bottom:27px; color:var(--muted); font-size:clamp(1rem,2vw,1.15rem); }
+.actions { display:flex; flex-wrap:wrap; gap:12px; }
+.action { display:inline-flex; align-items:center; justify-content:center; min-height:45px; padding:9px 17px; border:1px solid #8761c2; border-radius:6px; background:#251639; text-decoration:none; font-weight:800; transition:background .15s,transform .15s; }
+.action.primary { background:var(--violet); color:#140a22; border-color:var(--violet); }
+.action:hover { transform:translateY(-2px); background:#35204e; }
+.action.primary:hover { background:#c6a5ff; }
+.hero-art { position:relative; margin:0; display:grid; place-items:center; min-width:0; padding:15px; border:1px solid #42295e; border-radius:12px; background:repeating-linear-gradient(0deg,transparent 0 22px,#bc81ff13 23px 24px),repeating-linear-gradient(90deg,#110c1c 0 22px,#bc81ff13 23px 24px); box-shadow:inset 0 0 35px #11081b; }
+.hero-art img { width:min(100%,360px); height:auto; display:block; filter:drop-shadow(0 12px 20px #0008); }
+.section { padding-block:55px; border-bottom:1px solid var(--line); }
+h2 { margin-bottom:12px; font-size:clamp(1.85rem,4vw,2.8rem); line-height:1.2; letter-spacing:-.055em; }
+.section-note { color:var(--muted); margin-bottom:22px; }
+.game-card { display:grid; grid-template-columns:1fr 1fr; border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--panel); }
+.game-card:hover { border-color:#8159bb; }
+.game-art { min-height:230px; display:grid; place-items:center; background:radial-gradient(ellipse at 50% 60%,#31204c,#120d1e 74%); padding:21px; }
+.game-art canvas { width:min(100%,300px); height:auto; display:block; }
+.game-copy { padding:clamp(20px,4vw,39px); align-self:center; }
+.game-copy h3 { font-size:1.55rem; margin-bottom:7px; }
+.game-copy p { color:var(--muted); margin-bottom:20px; }
+.analysis { border:1px solid var(--line); border-radius:10px; overflow:hidden; background:#151020; }
+details + details { border-top:1px solid var(--line); }
+summary { padding:16px 20px; cursor:pointer; font-weight:800; color:var(--lilac); }
+summary:hover { background:#241637; }
+.detail { padding:0 20px 17px; color:var(--muted); }
+.detail p { margin-bottom:9px; }
+.detail p:last-child { margin-bottom:0; }
+.detail strong { color:var(--white); }
+.resources { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.resource { padding:24px; border:1px dashed #5b417f; border-radius:9px; background:#151020; }
+.resource h2 { font-size:1.4rem; }
+.resource p { margin:0; color:var(--muted); }
+footer { padding:24px 0; color:var(--muted); }
+dialog { width:min(700px,calc(100% - 22px)); max-height:calc(100dvh - 24px); overflow:auto; padding:clamp(12px,3vw,24px); border:1px solid #8c63c6; border-radius:12px; background:#110c1a; color:var(--white); }
+dialog::backdrop { background:#07050cd9; }
+.dialog-top,.game-status { display:flex; justify-content:space-between; gap:12px; align-items:center; }
+.dialog-top h2 { margin:0; font-size:1.45rem; }
+.close { background:#241438; border:1px solid var(--line); border-radius:6px; padding:5px 10px; }
+.game-status { margin:10px 0 8px; flex-wrap:wrap; }
+.game-status output { color:var(--lime); font-weight:800; }
+.screen { position:relative; border:1px solid #44296a; background:#18112a; border-radius:8px; overflow:hidden; }
+.screen canvas { display:block; width:100%; height:auto; }
+.game-overlay { position:absolute; inset:0; display:grid; place-content:center; justify-items:center; gap:10px; padding:8px; background:#100a1be8; text-align:center; }
+.game-overlay p { margin:0; font-weight:800; }
+.controls { display:flex; gap:10px; align-items:center; justify-content:space-between; margin-top:12px; flex-wrap:wrap; }
+.controls p { color:var(--muted); margin:0; }
+.control-buttons { display:flex; gap:8px; }
+.control-buttons button { touch-action:none; user-select:none; min-width:58px; min-height:44px; }
+@media(max-width:760px) {
+  .wrap { width:calc(100% - 32px); }
+  .menu-toggle { display:inline-flex; }
+  nav { display:none; position:absolute; z-index:1; inset:calc(100% + 1px) 0 auto; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:8px; }
+  nav[data-open="true"] { display:grid; }
+  nav a { font-size:1rem; }
+  .hero-grid { min-height:auto; grid-template-columns:1fr; gap:24px; padding-block:40px; }
+  .hero-art img { width:min(100%,255px); }
+  .section { padding-block:37px; }
+  .game-card,.resources { grid-template-columns:1fr; }
+  .game-art { min-height:0; }
+}
+@media(prefers-reduced-motion:reduce) {
+  html { scroll-behavior:auto; }
+  *,*::before,*::after { transition:none !important; animation:none !important; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#intro">본문으로 건너뛰기</a>
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="#intro"><img src="images/logo.png" alt="" width="37" height="37">브로브로</a>
+    <button class="menu-toggle close" type="button" aria-expanded="false" aria-controls="site-nav">메뉴</button>
+    <nav id="site-nav" aria-label="주 메뉴">
+      <a href="#intro" aria-current="location">소개</a>
+      <a href="#games">게임 예시</a>
+      <a href="#interview">게임 제작 인터뷰 분석</a>
+      <a href="#robotics">로봇 코딩 자료</a>
+      <a href="#chatbots">챗봇 자료</a>
+    </nav>
+  </div>
+</header>
+<main>
+  <section class="hero" id="intro">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="kicker">VIBE CODING ARCADE</p>
+        <h1>브로브로</h1>
+        <p class="hero-copy">게임·로봇·챗봇을 만드는 사람들의 자료실. 직접 만든 게임을 플레이하고, 첫 질문이 어떻게 게임이 됐는지 살펴보세요.</p>
+        <div class="actions">
+          <a class="action primary" href="#games">게임 고르기</a>
+          <a class="action" href="#interview">인터뷰 분석 읽기</a>
+        </div>
+      </div>
+      <figure class="hero-art"><img src="images/logo.png" alt="보라색 아케이드 게임기 두 대가 서로 어깨동무한 브로브로 로고" width="1280" height="1280"></figure>
+    </div>
+  </section>
+
+  <section class="section" id="games">
+    <div class="wrap">
+      <h2>게임 예시</h2>
+      <article class="game-card" id="breakout">
+        <div class="game-art"><canvas id="game-art" width="320" height="176" aria-hidden="true"></canvas></div>
+        <div class="game-copy">
+          <h3>벽돌깨기</h3>
+          <p>패들로 공을 받아 벽돌을 깨세요. 벽돌 하나당 10점이고, 공을 놓치면 다시 도전할 수 있어요.</p>
+          <div class="actions">
+            <button class="action primary" id="open-game" type="button">플레이</button>
+            <a class="action" href="#interview">제작 과정 보기</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" id="interview">
+    <div class="wrap">
+      <h2>게임 제작 인터뷰 분석</h2>
+      <p class="section-note">벽돌깨기 요청에서 확정된 규칙과 구현 중에 정한 값을 살펴보세요.</p>
+      <div class="analysis">
+        <details open>
+          <summary>조작과 점수에 어떤 요구가 있었나요?</summary>
+          <div class="detail">
+            <p><strong>실제 요청</strong> “방향키로 패들을 움직이고, 화면 위에 점수 표시.”</p>
+            <p><strong>설계 결정</strong> 좌우 방향키로 패들을 움직이고, 벽돌 하나를 맞힐 때마다 점수판을 10점씩 올려요. 보라색 게임판 위쪽에 점수를 배치했어요.</p>
+            <p><strong>더 물어볼 질문</strong> “휴대폰에서도 플레이할까요?” 이 사이트의 게임에는 화면 버튼도 넣었어요.</p>
+          </div>
+        </details>
+        <details>
+          <summary>벽돌 수와 색상은 어떻게 정했나요?</summary>
+          <div class="detail">
+            <p><strong>실제 요청</strong> 벽돌 줄 수와 색 테마는 각각 입력칸으로 남아 있었어요.</p>
+            <p><strong>첫 버전의 가정</strong> 5줄과 남색·민트·보라를 사용했어요. 브로브로에서는 5줄을 유지하고 벽돌 색을 아케이드 테마에 맞췄어요.</p>
+            <p><strong>더 물어볼 질문</strong> “한 판을 가볍게 끝내고 싶나요, 더 오래 도전하고 싶나요?” 답에 따라 줄 수와 공 속도를 조절할 수 있어요.</p>
+          </div>
+        </details>
+        <details>
+          <summary>공을 놓친 뒤 어떤 일이 일어나나요?</summary>
+          <div class="detail">
+            <p><strong>실제 요청</strong> 공을 놓치면 “다시 시작” 버튼을 보여 줘요.</p>
+            <p><strong>설계 결정</strong> 공이 화면 아래로 넘어가면 게임을 멈춰요. 다시 시작하면 점수를 0으로 바꾸고 벽돌과 공의 위치를 되돌려요.</p>
+            <p><strong>확인 방법</strong> 가만히 두고 공이 떨어질 때까지 기다린 뒤, “다시 시작”을 눌러 점수와 벽돌을 확인해요.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <div class="section">
+    <div class="wrap resources">
+      <section class="resource" id="robotics"><h2>로봇 코딩 자료</h2><p>준비 중</p></section>
+      <section class="resource" id="chatbots"><h2>챗봇 자료</h2><p>준비 중</p></section>
+    </div>
+  </div>
+</main>
+<footer><div class="wrap">브로브로</div></footer>
+
+<dialog id="game-dialog" aria-labelledby="game-title">
+  <div class="dialog-top">
+    <h2 id="game-title">벽돌깨기</h2>
+    <form method="dialog"><button class="close" type="submit">닫기</button></form>
+  </div>
+  <div class="game-status"><span>점수 <output id="score" aria-label="점수">0</output></span><span>벽돌 <output id="remaining" aria-label="남은 벽돌">45</output> / 45</span></div>
+  <div class="screen">
+    <canvas id="board" width="640" height="390" aria-label="벽돌깨기 게임 화면"></canvas>
+    <div class="game-overlay" id="game-overlay">
+      <p id="game-message" role="status">벽돌 45개를 깨 보세요.</p>
+      <button class="action primary" id="start-game" type="button">게임 시작</button>
+    </div>
+  </div>
+  <div class="controls">
+    <p>← → 방향키 또는 화면 버튼을 사용하세요.</p>
+    <div class="control-buttons">
+      <button class="action" type="button" data-direction="left">왼쪽</button>
+      <button class="action" type="button" data-direction="right">오른쪽</button>
+    </div>
+  </div>
+</dialog>
+<script>
+const nav = document.querySelector("#site-nav");
+const menu = document.querySelector(".menu-toggle");
+const navLinks = [...nav.querySelectorAll("a")];
+
+function setMenu(open) {
+  nav.dataset.open = String(open);
+  menu.setAttribute("aria-expanded", String(open));
+}
+
+menu.addEventListener("click", () => setMenu(menu.getAttribute("aria-expanded") !== "true"));
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && nav.dataset.open === "true") {
+    setMenu(false);
+    menu.focus();
+  }
+});
+document.querySelector("header").addEventListener("click", (event) => {
+  if (event.target.closest("a")) setMenu(false);
+});
+
+function updateNavigation() {
+  const current = location.hash || "#intro";
+  for (const link of navLinks) {
+    if (link.getAttribute("href") === current) link.setAttribute("aria-current", "location");
+    else link.removeAttribute("aria-current");
+  }
+}
+window.addEventListener("hashchange", updateNavigation);
+updateNavigation();
+
+const palette = ["#a470ff", "#b28bff", "#c6a8ff", "#dfc8ff", "#ddff9a"];
+const artwork = document.querySelector("#game-art").getContext("2d");
+for (let row = 0; row < 5; row++) {
+  for (let column = 0; column < 9; column++) {
+    if (row === 4 && (column === 5 || column === 6)) continue;
+    artwork.fillStyle = palette[row];
+    artwork.fillRect(13 + column * 33, 25 + row * 13, 27, 7);
+  }
+}
+artwork.fillStyle = "#e4d2ff";
+artwork.fillRect(112, 146, 66, 6);
+artwork.fillStyle = "#fff";
+artwork.beginPath();
+artwork.arc(216, 113, 4, 0, Math.PI * 2);
+artwork.fill();
+
+const dialog = document.querySelector("#game-dialog");
+const launch = document.querySelector("#open-game");
+const canvas = document.querySelector("#board");
+const ctx = canvas.getContext("2d");
+const overlay = document.querySelector("#game-overlay");
+const message = document.querySelector("#game-message");
+const start = document.querySelector("#start-game");
+const scoreLabel = document.querySelector("#score");
+const remainingLabel = document.querySelector("#remaining");
+const paddle = { x: 0, y: 352, width: 104, height: 11, speed: 440 };
+const ball = { x: 0, y: 0, radius: 7, vx: 0, vy: 0 };
+const keys = new Set();
+const pointers = new Map();
+let bricks, score, remaining;
+let playing = false;
+let lastTime = 0;
+let frame = 0;
+
+function reset() {
+  const gap = 8;
+  const width = (canvas.width - 56 - gap * 8) / 9;
+  bricks = Array.from({ length:45 }, (_, index) => ({
+    x:28 + (index % 9) * (width + gap),
+    y:24 + Math.floor(index / 9) * 22,
+    width,
+    height:14,
+    color:palette[Math.floor(index / 9)],
+    active:true
+  }));
+  paddle.x = (canvas.width - paddle.width) / 2;
+  Object.assign(ball, { x:canvas.width / 2, y:paddle.y - 18, vx:145, vy:-260 });
+  score = 0;
+  remaining = bricks.length;
+  updateScore();
+}
+
+function updateScore() {
+  scoreLabel.value = score;
+  remainingLabel.value = remaining;
+}
+
+function finish(text) {
+  playing = false;
+  message.textContent = text;
+  start.textContent = "다시 시작";
+  overlay.hidden = false;
+  start.focus();
+}
+
+function update(dt) {
+  const held = [...pointers.values()];
+  const right = keys.has("ArrowRight") || held.includes("right");
+  const left = keys.has("ArrowLeft") || held.includes("left");
+  paddle.x = Math.max(0, Math.min(canvas.width - paddle.width, paddle.x + (Number(right) - Number(left)) * paddle.speed * dt));
+
+  const oldX = ball.x;
+  const oldY = ball.y;
+  const r = ball.radius;
+  ball.x += ball.vx * dt;
+  ball.y += ball.vy * dt;
+  if (ball.x <= r) { ball.x = r; ball.vx = Math.abs(ball.vx); }
+  if (ball.x >= canvas.width - r) { ball.x = canvas.width - r; ball.vx = -Math.abs(ball.vx); }
+  if (ball.y <= r) { ball.y = r; ball.vy = Math.abs(ball.vy); }
+
+  if (ball.vy > 0 && oldY + r <= paddle.y && ball.y + r >= paddle.y &&
+      ball.x + r >= paddle.x && ball.x - r <= paddle.x + paddle.width) {
+    const offset = (ball.x - paddle.x - paddle.width / 2) / (paddle.width / 2);
+    const angle = Math.max(-1, Math.min(1, offset)) * Math.PI / 3;
+    const speed = Math.min(490, Math.hypot(ball.vx, ball.vy) + 10);
+    ball.y = paddle.y - r;
+    ball.vx = speed * Math.sin(angle);
+    ball.vy = -speed * Math.cos(angle);
+  }
+
+  for (const brick of bricks) {
+    if (!brick.active) continue;
+    const rightEdge = brick.x + brick.width;
+    const bottomEdge = brick.y + brick.height;
+    if (ball.x + r < brick.x || ball.x - r > rightEdge ||
+        ball.y + r < brick.y || ball.y - r > bottomEdge) continue;
+
+    if (oldY + r <= brick.y) {
+      ball.y = brick.y - r;
+      ball.vy = -Math.abs(ball.vy);
+    } else if (oldY - r >= bottomEdge) {
+      ball.y = bottomEdge + r;
+      ball.vy = Math.abs(ball.vy);
+    } else if (oldX + r <= brick.x || oldX - r >= rightEdge) {
+      ball.x = oldX + r <= brick.x ? brick.x - r : rightEdge + r;
+      ball.vx *= -1;
+    } else {
+      ball.vy *= -1;
+    }
+    brick.active = false;
+    remaining--;
+    score += 10;
+    updateScore();
+    if (remaining === 0) finish("벽돌을 모두 깼어요!");
+    break;
+  }
+  if (ball.y - r > canvas.height) finish("공을 놓쳤어요!");
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (const brick of bricks) {
+    if (!brick.active) continue;
+    ctx.fillStyle = brick.color;
+    ctx.fillRect(brick.x, brick.y, brick.width, brick.height);
+  }
+  ctx.fillStyle = "#ddff9a";
+  ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+  ctx.beginPath();
+  ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+  ctx.fillStyle = "#fff";
+  ctx.fill();
+}
+
+function animate(now) {
+  frame = 0;
+  if (!playing || !dialog.open) return;
+  const elapsed = lastTime ? Math.min((now - lastTime) / 1000, .05) : 0;
+  lastTime = now;
+  const steps = Math.max(1, Math.ceil(elapsed * 120));
+  for (let i = 0; i < steps && playing; i++) update(elapsed / steps);
+  draw();
+  if (playing) frame = requestAnimationFrame(animate);
+}
+
+function clearInput() {
+  keys.clear();
+  pointers.clear();
+}
+
+launch.addEventListener("click", () => {
+  reset();
+  draw();
+  message.textContent = "벽돌 45개를 깨 보세요.";
+  start.textContent = "게임 시작";
+  overlay.hidden = false;
+  dialog.showModal();
+  start.focus();
+});
+start.addEventListener("click", () => {
+  reset();
+  clearInput();
+  draw();
+  overlay.hidden = true;
+  dialog.querySelector(".close").focus();
+  lastTime = 0;
+  playing = true;
+  frame = requestAnimationFrame(animate);
+});
+dialog.addEventListener("close", () => {
+  playing = false;
+  cancelAnimationFrame(frame);
+  frame = 0;
+  clearInput();
+  launch.focus();
+});
+window.addEventListener("keydown", (event) => {
+  if (!dialog.open || !playing || !["ArrowLeft","ArrowRight"].includes(event.key)) return;
+  event.preventDefault();
+  keys.add(event.key);
+});
+window.addEventListener("keyup", (event) => keys.delete(event.key));
+window.addEventListener("blur", clearInput);
+for (const button of document.querySelectorAll("[data-direction]")) {
+  button.addEventListener("pointerdown", (event) => {
+    if (!playing) return;
+    button.setPointerCapture(event.pointerId);
+    pointers.set(event.pointerId, button.dataset.direction);
+  });
+  for (const name of ["pointerup","pointercancel","lostpointercapture"]) {
+    button.addEventListener(name, (event) => pointers.delete(event.pointerId));
+  }
+  button.addEventListener("click", (event) => {
+    if (!playing || event.detail !== 0) return;
+    const delta = button.dataset.direction === "left" ? -25 : 25;
+    paddle.x = Math.max(0, Math.min(canvas.width - paddle.width, paddle.x + delta));
+  });
+}
+</script>
+</body>
+</html>
